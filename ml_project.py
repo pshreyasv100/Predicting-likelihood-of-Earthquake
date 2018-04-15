@@ -12,6 +12,19 @@ import numpy
 import matplotlib.pyplot as plt 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasClassifier
+#from keras.utils import np_utils
+from keras import optimizers
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import StratifiedKFold
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import cross_val_score
 
 
 
@@ -45,42 +58,16 @@ seismic_df['seismoacoustic'] = seismoacoustic_integer_encoded
 
 ghazard_integer_encoded = label_encoder.fit_transform(seismic_df['ghazard'])
 seismic_df['ghazard'] = ghazard_integer_encoded
-
-
 seismic_df = seismic_df.drop(['shift'],axis =1)
-
-#One hot encoding 'shift'
-# integer encode
-#shift_integer_encoded = label_encoder.fit_transform(seismic_df['shift'])
-#print(shift_integer_encoded)
-# binary encode
-#onehot_encoder = OneHotEncoder(sparse=False)
-#shift_integer_encoded = shift_integer_encoded.reshape(len(shift_integer_encoded), 1)
-#shift_onehot_encoded = onehot_encoder.fit_transform(shift_integer_encoded)
-
-#type(shift_onehot_encoded)
-
-#shift_onehot_encoded = pd.DataFrame(shift_onehot_encoded)
-#seismic_df.append(shift_onehot_encoded)
 
 
 #%%
-
-#Model building
-
-#Converting values of target attribute to categorical
-#seismic_df["class"] = seismic_df["class"].astype('category')
-
+#Splitting data into test and training sets
 X = seismic_df.iloc[:,0:17]
 y = seismic_df.iloc[:,17]
 
-
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.metrics import roc_auc_score, roc_curve
-from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import cross_val_score
-
+print(X.shape)
+print(y.shape)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
 
@@ -102,7 +89,7 @@ accuracies = cross_val_score(estimator = classifier1, X = X_train, y = y_train, 
 mn=accuracies.mean()
 sd=accuracies.std()
 
-print ("\n Gaussian naive Bayes :-  ") 
+print ("\n________Gaussian naive Bayes _____________") 
 print ("\n mean Accuracy:  ")
 print (mn)
 print ("\n Standard Deviation:")
@@ -113,9 +100,6 @@ print ("\n Confusion Matrix : ")
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 
-#print ("\n Classification Report : ")
-#from sklearn.metrics import classification_report
-#print (classification_report(y_test, y_pred) )
 
 fpr, tpr, threshold = roc_curve(y_test, y_pred)
 roc_auc=roc_auc_score(y_test, y_pred)
@@ -137,7 +121,7 @@ plt.show()
 #____________________ KNN model_____________________________________________________
 
 from sklearn.neighbors import KNeighborsClassifier
-classifier2 = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
+classifier2 = KNeighborsClassifier(n_neighbors = 5, metric = 'euclidean', p = 2)
 trained_model = classifier2.fit(X_train, y_train)
 y_pred = trained_model.predict(X_test)
 
@@ -146,7 +130,7 @@ accuracies = cross_val_score(estimator = classifier2, X = X_train, y = y_train, 
 mn=accuracies.mean()
 sd=accuracies.std()
 
-print (" \n KNN :-  ") 
+print ("\n _____________KNN__________________") 
 print ("\n mean Accuracy: ")
 print (mn)
 
@@ -154,17 +138,14 @@ print ("\n Standard Deviation:")
 print (sd)
 
 print ("\n Confusion Matrix : ")
-# Making the Confusion Matrix
+#Confusion Matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 
-#print ("\n Classification Report : ")
-#from sklearn.metrics import classification_report
-#print (classification_report(y_test, y_pred) )
-
 fpr, tpr, threshold = roc_curve(y_test, y_pred)
 roc_auc=roc_auc_score(y_test, y_pred)
-print (roc_auc)
+print("AUC ROC")
+print(roc_auc)
 
 import matplotlib.pyplot as plt
 plt.title('Receiver Operating Characteristic')
@@ -202,13 +183,9 @@ print ("\n Standard Deviation:")
 print (sd)
 
 print ("\n Confusion Matrix : ")
-# Making the Confusion Matrix
+#Confusion Matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
-
-#print ("\n Classification Report : ")
-#from sklearn.metrics import classification_report
-#print (classification_report(y_test, y_pred) )
 
 fpr, tpr, threshold = roc_curve(y_test, y_pred)
 roc_auc=roc_auc_score(y_test, y_pred)
@@ -235,8 +212,6 @@ classifier4 = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
 trained_model = classifier4.fit(X_train, y_train)
 y_pred = trained_model.predict(X_test)
 
-
-
 accuracies = cross_val_score(estimator = classifier4, X = X_train, y = y_train, cv = 10)
 mn=accuracies.mean()
 sd=accuracies.std()
@@ -252,10 +227,6 @@ print ("\n Confusion Matrix : ")
 # Making the Confusion Matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
-
-#print ("\n Classification Report : ")
-#from sklearn.metrics import classification_report
-#print (classification_report(y_test, y_pred) )
 
 fpr, tpr, threshold = roc_curve(y_test, y_pred)
 roc_auc=roc_auc_score(y_test, y_pred)
@@ -283,13 +254,11 @@ classifier5 = SVC()
 trained_model = classifier5.fit(X_train, y_train)
 y_pred = trained_model.predict(X_test)
 
-
-
 accuracies = cross_val_score(estimator = classifier5, X = X_train, y = y_train, cv = 10)
 mn=accuracies.mean()
 sd=accuracies.std()
 
-print (" \n Decision Tree :-  ") 
+print (" \n Support Vector machines :-  ") 
 print ("\n mean Accuracy: ")
 print (mn)
 
@@ -301,13 +270,9 @@ print ("\n Confusion Matrix : ")
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 
-#print ("\n Classification Report : ")
-#from sklearn.metrics import classification_report
-#print (classification_report(y_test, y_pred) )
-
 fpr, tpr, threshold = roc_curve(y_test, y_pred)
 roc_auc=roc_auc_score(y_test, y_pred)
-print (roc_auc)
+print("\nAUC ROC ",roc_auc)
 
 import matplotlib.pyplot as plt
 plt.title('Receiver Operating Characteristic')
@@ -341,20 +306,15 @@ accuracies = cross_val_score(estimator = classifier6, X = X_train, y = y_train, 
 mn=accuracies.mean()
 sd=accuracies.std()
 
-print (" \n Bagging using Random Forest : Randomly selected 10 features and 100 forest and then mean accuracy :-  ") 
+print ("\n Bagging using Random Forest : Randomly selected 10 features and 100 forest and then mean accuracy :-  ") 
 print ("\n mean Accuracy: ")
 print (mn)
 
 print ("\n Standard Deviation:")
 print (sd)
 
-# Making the Confusion Matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
-
-#print ("\n Classification Report : ")
-#from sklearn.metrics import classification_report
-#print (classification_report(y_test, y_pred) )
 
 fpr, tpr, threshold = roc_curve(y_test, y_pred)
 roc_auc=roc_auc_score(y_test, y_pred)
@@ -394,12 +354,8 @@ print (mn)
 print ("\n Standard Deviation:")
 print (sd)
 
-# Making the Confusion Matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
-
-#print ("\n Classification Report : ")
-#print (classification_report(y_test, y_pred) )
 
 fpr, tpr, threshold = roc_curve(y_test, y_pred)
 roc_auc=roc_auc_score(y_test, y_pred)
@@ -416,5 +372,62 @@ plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
 plt.show()
 
+#%%
 
+#_____________________Neural Network classifier 1________________________________________________________
+# create model
+model = Sequential()
+model.add(Dense(17, input_dim=17, kernel_initializer='normal', activation='relu'))
+model.add(Dense(17, kernel_initializer='normal', activation='relu'))
+model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
+# Compile model
+sgd =optimizers.SGD(lr=0.01, momentum=0.8, decay=0.0, nesterov=False)
+model.compile(loss='binary_crossentropy',optimizer=sgd, metrics=['accuracy'])
 
+#We manually provide the train and test partition
+history = model.fit(X, y, validation_split=0.33, epochs=30, batch_size=16, verbose=2)
+
+# summarize history for accuracy
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Neural Network model 1 accuracy (epoch = 30)')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+#_______________________Neural Network Classifier 2_______________________________
+history2 = model.fit(X, y, validation_split=0.33, epochs=50, batch_size=16, verbose=2)
+
+# summarize history for accuracy
+plt.plot(history2.history['acc'])
+plt.plot(history2.history['val_acc'])
+plt.title('Neural Network model 2 accuracy (epoch = 50)')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+#_______________________Neural Network Classifier 3_______________________________
+history3 = model.fit(X, y, validation_split=0.33, epochs=100, batch_size=16, verbose=2)
+
+# summarize history for accuracy
+plt.plot(history3.history['acc'])
+plt.plot(history3.history['val_acc'])
+plt.title('Neural Network model 3 accuracy (epoch = 100)')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+#_______________________Neural Network Classifier 4_______________________________
+history4 = model.fit(X, y, validation_split=0.33, epochs=150, batch_size=16, verbose=2)
+s
+# summarize history for accuracy
+plt.plot(history4.history['acc'])
+plt.plot(history4.history['val_acc'])
+plt.title('Neural Network model 4 accuracy (epoch = 150)')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
