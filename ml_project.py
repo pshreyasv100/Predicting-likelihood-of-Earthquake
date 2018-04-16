@@ -121,7 +121,7 @@ plt.show()
 #____________________ KNN model_____________________________________________________
 
 from sklearn.neighbors import KNeighborsClassifier
-classifier2 = KNeighborsClassifier(n_neighbors = 5, metric = 'euclidean', p = 2)
+classifier2 = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
 trained_model = classifier2.fit(X_train, y_train)
 y_pred = trained_model.predict(X_test)
 
@@ -216,7 +216,7 @@ accuracies = cross_val_score(estimator = classifier4, X = X_train, y = y_train, 
 mn=accuracies.mean()
 sd=accuracies.std()
 
-print (" \n Decision Tree :-  ") 
+print ("\n Decision Tree :-  ") 
 print ("\n mean Accuracy: ")
 print (mn)
 
@@ -306,7 +306,7 @@ accuracies = cross_val_score(estimator = classifier6, X = X_train, y = y_train, 
 mn=accuracies.mean()
 sd=accuracies.std()
 
-print ("\n Bagging using Random Forest : Randomly selected 10 features and 100 forest and then mean accuracy :-  ") 
+print ("\n Random Forest : Randomly selected 10 features and 100 forest and then mean accuracy :-  ") 
 print ("\n mean Accuracy: ")
 print (mn)
 
@@ -387,6 +387,9 @@ model.compile(loss='binary_crossentropy',optimizer=sgd, metrics=['accuracy'])
 #We manually provide the train and test partition
 history = model.fit(X, y, validation_split=0.33, epochs=30, batch_size=16, verbose=2)
 
+Y_test_set = pd.Series.as_matrix(seismic_df.iloc[:,17])
+ynew = model.predict_classes(Y_test_set)
+
 # summarize history for accuracy
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
@@ -397,37 +400,39 @@ plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
 #_______________________Neural Network Classifier 2_______________________________
-history2 = model.fit(X, y, validation_split=0.33, epochs=50, batch_size=16, verbose=2)
+#history2 = model.fit(X, y, validation_split=0.33, epochs=50, batch_size=16, verbose=2)
 
 # summarize history for accuracy
-plt.plot(history2.history['acc'])
-plt.plot(history2.history['val_acc'])
-plt.title('Neural Network model 2 accuracy (epoch = 50)')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+#plt.plot(history2.history['acc'])
+#plt.plot(history2.history['val_acc'])
+#plt.title('Neural Network model 2 accuracy (epoch = 50)')
+#plt.ylabel('accuracy')
+#plt.xlabel('epoch')
+#plt.legend(['train', 'test'], loc='upper left')
+#plt.show()
 
 #_______________________Neural Network Classifier 3_______________________________
-history3 = model.fit(X, y, validation_split=0.33, epochs=100, batch_size=16, verbose=2)
+#history3 = model.fit(X, y, validation_split=0.33, epochs=100, batch_size=16, verbose=2)
 
 # summarize history for accuracy
-plt.plot(history3.history['acc'])
-plt.plot(history3.history['val_acc'])
-plt.title('Neural Network model 3 accuracy (epoch = 100)')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+#plt.plot(history3.history['acc'])
+#plt.plot(history3.history['val_acc'])
+#plt.title('Neural Network model 3 accuracy (epoch = 100)')
+#plt.ylabel('accuracy')
+#plt.xlabel('epoch')
+#plt.legend(['train', 'test'], loc='upper left')
+#plt.show()
 
 #_______________________Neural Network Classifier 4_______________________________
-history4 = model.fit(X, y, validation_split=0.33, epochs=150, batch_size=16, verbose=2)
-s
+#history4 = model.fit(X, y, validation_split=0.33, epochs=150, batch_size=16, verbose=2)
+
 # summarize history for accuracy
-plt.plot(history4.history['acc'])
-plt.plot(history4.history['val_acc'])
-plt.title('Neural Network model 4 accuracy (epoch = 150)')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+#plt.plot(history4.history['acc'])
+#plt.plot(history4.history['val_acc'])
+#plt.title('Neural Network model 4 accuracy (epoch = 150)')
+#plt.ylabel('accuracy')
+#plt.xlabel('epoch')
+#plt.legend(['train', 'test'], loc='upper left')
+#plt.show()
+
+
